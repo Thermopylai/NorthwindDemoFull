@@ -110,43 +110,43 @@
             {
                 <tr>
                     <td><button class="getOrderId bi bi-pencil-square" data-order-id="@item.OrderID"></button></td>
-                    <td data-label="@Html.DisplayNameFor(model => model.OrderID)">
+                    <td  class="cell-orderid" data-label="@Html.DisplayNameFor(model => model.OrderID)">
                         @Html.DisplayFor(_ => item.OrderID)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.CustomerID)">
+                    <td class="cell-customer" data-label="@Html.DisplayNameFor(model => model.CustomerID)">
                         @Html.DisplayFor(_ => item.Customer.CompanyName)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.EmployeeID)">
+                    <td class="cell-employee" data-label="@Html.DisplayNameFor(model => model.EmployeeID)">
                         @Html.DisplayFor(_ => item.Employee.LastName)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.OrderDate)">
+                    <td class="cell-orderdate" data-label="@Html.DisplayNameFor(model => model.OrderDate)">
                         @Html.DisplayFor(_ => item.OrderDate)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.RequiredDate)">
+                    <td class="cell-requireddate" data-label="@Html.DisplayNameFor(model => model.RequiredDate)">
                         @Html.DisplayFor(_ => item.RequiredDate)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.ShippedDate)">
+                    <td class="cell-shippeddate" data-label="@Html.DisplayNameFor(model => model.ShippedDate)">
                         @Html.DisplayFor(_ => item.ShippedDate)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.TotalAmount)">
+                    <td class="cell-totalamount" data-label="@Html.DisplayNameFor(model => model.TotalAmount)">
                         @Html.DisplayFor(_ => item.TotalAmount)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.TotalTax)">
+                    <td class="cell-totaltax" data-label="@Html.DisplayNameFor(model => model.TotalTax)">
                         @Html.DisplayFor(_ => item.TotalTax)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.VatTotal)">
+                    <td class="cell-vattotal" data-label="@Html.DisplayNameFor(model => model.VatTotal)">
                         @Html.DisplayFor(_ => item.VatTotal)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.Freight)">
+                    <td class="cell-freight" data-label="@Html.DisplayNameFor(model => model.Freight)">
                         @Html.DisplayFor(_ => item.Freight)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.FinalPrice)">
+                    <td class="cell-finalprice" data-label="@Html.DisplayNameFor(model => model.FinalPrice)">
                         @Html.DisplayFor(_ => item.FinalPrice)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.ShipCountry)">
+                    <td class="cell-shipcountry" data-label="@Html.DisplayNameFor(model => model.ShipCountry)">
                         @Html.DisplayFor(_ => item.ShipCountry)
                     </td>
-                    <td data-label="@Html.DisplayNameFor(model => model.ShipVia)">
+                    <td class="cell-shipvia" data-label="@Html.DisplayNameFor(model => model.ShipVia)">
                         @Html.DisplayFor(_ => item.Shipper.CompanyName)
                     </td>
                     <td class="cell-actions">
@@ -184,10 +184,12 @@
         $(function () {
             $(".getOrderId").click(function () {
                 const orderId = $(this).data("order-id");
-                const url = "/Orders/_ModalEdit/?id=" + orderId;
+                const url = "/Orders/_ModalEdit/" + orderId;
                 $.get(url)
                     .done(function (data) {
-                        $("#orderEdit").html(data);
+                        const host = $("#orderEdit");
+                        host.empty();
+                        host.html(data);
 
                         const modalEl = document.getElementById("editOrderModal");
                         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);

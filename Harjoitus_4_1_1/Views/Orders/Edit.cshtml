@@ -27,57 +27,57 @@
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const customerDropdown = document.getElementById("customerId");
-        if (!customerDropdown) return;
+        document.addEventListener("DOMContentLoaded", () => {
+            const customerDropdown = document.getElementById("customerId");
+            if (!customerDropdown) return;
 
-        const fields = {
-            shipName: document.getElementById("shipName"),
-            shipAddress: document.getElementById("shipAddress"),
-            shipCity: document.getElementById("shipCity"),
-            shipRegion: document.getElementById("shipRegion"),
-            shipPostalCode: document.getElementById("shipPostalCode"),
-            shipCountry: document.getElementById("shipCountry")
-        };
+            const fields = {
+                shipName: document.getElementById("shipName"),
+                shipAddress: document.getElementById("shipAddress"),
+                shipCity: document.getElementById("shipCity"),
+                shipRegion: document.getElementById("shipRegion"),
+                shipPostalCode: document.getElementById("shipPostalCode"),
+                shipCountry: document.getElementById("shipCountry")
+            };
+        
+            const clearFields = () => {
+                Object.values(fields).forEach(el => { if (el) el.value = ""; });
+            };
 
-        const clearFields = () => {
-            Object.values(fields).forEach(el => { if (el) el.value = ""; });
-        };
+            customerDropdown.addEventListener("change", async () => {
+                const selectedCustomer = customerDropdown.value;
 
-        customerDropdown.addEventListener("change", async () => {
-            const selectedCustomer = customerDropdown.value;
-
-            if (!selectedCustomer) {
-                clearFields();
-                return;
-            }
-
-            const url = '@Url.Action("GetCustomerForOrder", "Customers")' +
-                        '?id=' + encodeURIComponent(selectedCustomer);
-
-            try {
-                const response = await fetch(url, { method: "GET" });
-
-                if (!response.ok) {
+                if (!selectedCustomer) {
                     clearFields();
-                    console.log("Failed to load customer details. Status:", response.status);
                     return;
                 }
 
-                const customerDetails = await response.json();
+                const url = '@Url.Action("GetCustomerForOrder", "Customers")' +
+                            '?id=' + encodeURIComponent(selectedCustomer);
 
-                fields.shipName.value = customerDetails.CompanyName || "";
-                fields.shipAddress.value = customerDetails.Address || "";
-                fields.shipCity.value = customerDetails.City || "";
-                fields.shipRegion.value = customerDetails.Region || "";
-                fields.shipPostalCode.value = customerDetails.PostalCode || "";
-                fields.shipCountry.value = customerDetails.Country || "";
-            } catch (err) {
-                clearFields();
-                console.log("Fetch error:", err);
-            }
+                try {
+                    const response = await fetch(url, { method: "GET" });
+
+                    if (!response.ok) {
+                        clearFields();
+                        console.log("Failed to load customer details. Status:", response.status);
+                        return;
+                    }
+
+                    const customerDetails = await response.json();
+
+                    fields.shipName.value = customerDetails.CompanyName || "";
+                    fields.shipAddress.value = customerDetails.Address || "";
+                    fields.shipCity.value = customerDetails.City || "";
+                    fields.shipRegion.value = customerDetails.Region || "";
+                    fields.shipPostalCode.value = customerDetails.PostalCode || "";
+                    fields.shipCountry.value = customerDetails.Country || "";
+                } catch (err) {
+                    clearFields();
+                    console.log("Fetch error:", err);
+                }
+            });
         });
-    });
     </script>
 
     <div class="mb-3 row">

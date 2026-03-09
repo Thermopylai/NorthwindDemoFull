@@ -17,32 +17,40 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.CustomerID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
                         <div class="col-md-10">
-                            @Html.DropDownListFor(model => model.CustomerID, (SelectList)ViewBag.CustomerID, "-- Select customer --", new { @class = "form-control", id = "customerId" })
+                            @Html.DropDownListFor(model => model.CustomerID, (SelectList)ViewBag.CustomerID, "-- Select customer --", new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
                     <script>
                         (() => {
-                            // Runs immediately when the partial is injected.
-
                             const modal = document.getElementById("editOrderModal");
                             if (!modal) return;
+                                                        
+                            // Force selected values from the model
+                            const customerId = '@(Model.CustomerID ?? "")';
+                            const employeeId = '@(Model.EmployeeID?.ToString() ?? "")';
+                            const shipVia = '@(Model.ShipVia?.ToString() ?? "")';
 
-                            const customerDropdown = modal.getElementById("customerId");
-                            if (!customerDropdown) return;
+                            const customerDropdown = modal.querySelector("#CustomerID");
+                            const employeeDropdown = modal.querySelector("#EmployeeID");
+                            const shipViaDropdown = modal.querySelector("#ShipVia");
+
+                            if (customerDropdown) customerDropdown.value = customerId;
+                            if (employeeDropdown) employeeDropdown.value = employeeId;
+                            if (shipViaDropdown) shipViaDropdown.value = shipVia;
 
                             // Prevent duplicate binding if the modal is reopened/reloaded.
                             if (customerDropdown.dataset.prefillBound === "true") return;
                             customerDropdown.dataset.prefillBound = "true";
 
                             const fields = {
-                                shipName: modal.getElementById("shipName"),
-                                shipAddress: modal.getElementById("shipAddress"),
-                                shipCity: modal.getElementById("shipCity"),
-                                shipRegion: modal.getElementById("shipRegion"),
-                                shipPostalCode: modal.getElementById("shipPostalCode"),
-                                shipCountry: modal.getElementById("shipCountry")
+                                shipName: modal.querySelector("#ShipName"),
+                                shipAddress: modal.querySelector("#ShipAddress"),
+                                shipCity: modal.querySelector("#ShipCity"),
+                                shipRegion: modal.querySelector("#ShipRegion"),
+                                shipPostalCode: modal.querySelector("#ShipPostalCode"),
+                                shipCountry: modal.querySelector("#ShipCountry")
                             };
 
                             const clearFields = () => {
@@ -65,7 +73,6 @@
 
                                     if (!response.ok) {
                                         clearFields();
-                                        console.log("Failed to load customer details. Status:", response.status);
                                         return;
                                     }
 
@@ -79,8 +86,72 @@
                                     fields.shipCountry.value = customerDetails.Country || "";
                                 } catch (err) {
                                     clearFields();
-                                    console.log("Fetch error:", err);
                                 }
+                            });
+                        })();
+                        (() => {
+                            const modalEl = document.getElementById("editOrderModal");
+                            if (!modalEl) return;
+
+                            const form = modalEl.querySelector("#editForm");
+                            if (!form) return;
+
+                            // Avoid double-binding when modal HTML is replaced
+                            if (form.dataset.ajaxBound === "true") return;
+                            form.dataset.ajaxBound = "true";
+
+                            $(form).on("submit", function (e) {
+                                e.preventDefault();
+
+                                $.ajax({
+                                    url: form.action,
+                                    type: "POST",
+                                    data: $(form).serialize(),
+                                    dataType: "json" // expect JSON on success
+                                })
+                                    .done(function (json) {
+                                        if (!json || json.ok !== true) return;
+
+                                        // Find the row by the pencil button for this orderId
+                                        const btn = document.querySelector(".getOrderId[data-order-id='" + json.orderId + "']");
+                                        const row = btn ? btn.closest("tr") : null;
+
+                                        if (row) {
+                                            const setText = (selector, value) => {
+                                                const el = row.querySelector(selector);
+                                                if (el) el.textContent = value ?? "";
+                                            };
+
+                                            setText(".cell-customer", json.customerName);
+                                            setText(".cell-employee", json.employeeName);
+
+                                            setText(".cell-orderdate", json.orderDate);
+                                            setText(".cell-requireddate", json.requiredDate);
+                                            setText(".cell-shippeddate", json.shippedDate);
+
+                                            setText(".cell-totalamount", json.totalAmount);
+                                            setText(".cell-totaltax", json.totalTax);
+                                            setText(".cell-vattotal", json.vatTotal);
+                                            setText(".cell-freight", json.freight);
+                                            setText(".cell-finalprice", json.finalPrice);
+
+                                            setText(".cell-shipcountry", json.shipCountry);
+                                            setText(".cell-shipvia", json.shipperName);
+                                        }
+
+                                        // Close modal
+                                        bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+                                    })    
+                                    .fail(function (xhr) {
+                                        // Validation failure: server returned the partial view HTML
+                                        const host = $("#orderEdit");
+                                        host.empty();
+                                        host.html(xhr.responseText);
+
+                                        const newModalEl = document.getElementById("editOrderModal");
+                                        const modal = bootstrap.Modal.getOrCreateInstance(newModalEl);
+                                        modal.show();
+                                    });
                             });
                         })();
                     </script>
@@ -136,7 +207,7 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.ShipName, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.ShipName, new { htmlAttributes = new { @class = "form-control", id = "shipName" } })
+                            @Html.EditorFor(model => model.ShipName, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.ShipName, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -144,7 +215,7 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.ShipAddress, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.ShipAddress, new { htmlAttributes = new { @class = "form-control", id = "shipAddress" } })
+                            @Html.EditorFor(model => model.ShipAddress, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.ShipAddress, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -152,7 +223,7 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.ShipCity, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.ShipCity, new { htmlAttributes = new { @class = "form-control", id = "shipCity" } })
+                            @Html.EditorFor(model => model.ShipCity, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.ShipCity, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -160,7 +231,7 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.ShipRegion, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.ShipRegion, new { htmlAttributes = new { @class = "form-control", id = "shipRegion" } })
+                            @Html.EditorFor(model => model.ShipRegion, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.ShipRegion, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -168,7 +239,7 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.ShipPostalCode, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.ShipPostalCode, new { htmlAttributes = new { @class = "form-control", id = "shipPostalCode" } })
+                            @Html.EditorFor(model => model.ShipPostalCode, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.ShipPostalCode, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -176,7 +247,7 @@
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.ShipCountry, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
                         <div class="col-md-10">
-                            @Html.EditorFor(model => model.ShipCountry, new { htmlAttributes = new { @class = "form-control", id = "shipCountry" } })
+                            @Html.EditorFor(model => model.ShipCountry, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(model => model.ShipCountry, "", new { @class = "text-danger" })
                         </div>
                     </div>
