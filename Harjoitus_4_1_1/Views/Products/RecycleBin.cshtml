@@ -1,0 +1,153 @@
+﻿@using Harjoitus_4_1_1.Models
+@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Products - Recycle Bin";
+    var returnUrl = (string)ViewBag.ReturnUrl ?? Request.Url.PathAndQuery;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="validation-summary-errors">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<hr />
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+    <a class="btn btn-secondary me-1" href="@Url.Action("Index", new { returnUrl = returnUrl })">
+        <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>
+        <span>Back</span>
+    </a>
+    <input type="text"
+           id="search-products"
+           onkeyup="filterTable('search-products', 'products-table')"
+           placeholder="Search..."
+           class="form-control">
+</div>
+
+<div class="table-wrapper">
+    <table class="table table-striped table-bordered table-fixed" id="products-table">
+        <colgroup>
+            <col style="width: 80px;" />   @* ProductID *@
+            <col style="width: 280px;" />  @* ProductName *@
+            <col style="width: 320px;" />  @* Supplier *@
+            <col style="width: 140px;" />  @* CategoryName *@
+            <col style="width: 180px;" />  @* QuantityPerUnit *@
+            <col style="width: 100px;" />  @* UnitPrice *@
+            <col style="width: 100px;" />  @* TaxAmount *@
+            <col style="width: 100px;" />  @* PriceWithTax *@
+            <col style="width: 80px;" />   @* UnitsInStock *@
+            <col style="width: 80px;" />   @* UnitsOnOrder *@
+            <col style="width: 80px;" />   @* ReorderLevel *@
+            <col style="width: 300px;" />  @* Functions *@
+        </colgroup>
+        <thead class="table-dark">
+            <tr>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(model => model.ProductID)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ProductName)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Supplier.CompanyName)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Category.CategoryName)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.QuantityPerUnit)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.UnitPrice)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.TaxAmount)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.PriceWithTax)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.UnitsInStock)
+                </th>
+                <th class="sortable text-nowrap" title="@Html.DisplayNameFor(model => model.UnitsOnOrder)">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.UnitsOnOrder)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ReorderLevel)
+                </th>
+                <th class="text-nowrap">
+                    Functions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td data-label="@Html.DisplayNameFor(model => model.ProductID)">
+                        @Html.DisplayFor(_ => item.ProductID)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ProductName)">
+                        @Html.DisplayFor(_ => item.ProductName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Supplier.CompanyName)">
+                        @Html.DisplayFor(_ => item.Supplier.CompanyName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Category.CategoryName)">
+                        @Html.DisplayFor(_ => item.Category.CategoryName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.QuantityPerUnit)">
+                        @Html.DisplayFor(_ => item.QuantityPerUnit)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.UnitPrice)">
+                        @Html.DisplayFor(_ => item.UnitPrice)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.TaxAmount)">
+                        @Html.DisplayFor(_ => item.TaxAmount)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.PriceWithTax)">
+                        @Html.DisplayFor(_ => item.PriceWithTax)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.UnitsInStock)">
+                        @Html.DisplayFor(_ => item.UnitsInStock)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.UnitsOnOrder)">
+                        @Html.DisplayFor(_ => item.UnitsOnOrder)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ReorderLevel)">
+                        @Html.DisplayFor(_ => item.ReorderLevel)
+                    </td>
+                    <td class="cell-actions">
+                        @using (Html.BeginForm("RestoreFromRecycleBin", "Products",
+                            new { id = item.ProductID, returnUrl = returnUrl }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-success me-1">
+                                <i class="bi bi-recycle me-1" aria-hidden="true"></i>
+                                <span>Restoren</span>
+                            </button>
+                        }
+                        <a class="btn btn-sm btn-warning me-1" href="@Url.Action("Edit", new { id = item.ProductID, returnUrl = returnUrl })">
+                            <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                            <span>Edit</span>
+                        </a>
+                        <a class="btn btn-sm btn-danger" href="@Url.Action("DeletePermanently", new { id = item.ProductID, returnUrl = returnUrl })">
+                            <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                            <span>Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+            <tr id="no-results-products" style="display: none; border: none">
+                <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                    No search results.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

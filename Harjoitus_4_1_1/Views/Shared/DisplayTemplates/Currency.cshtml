@@ -1,0 +1,4 @@
+﻿@model decimal?
+@(Model.HasValue
+    ? Model.Value.ToString("C", new System.Globalization.CultureInfo("fi-FI"))
+    : string.Empty)

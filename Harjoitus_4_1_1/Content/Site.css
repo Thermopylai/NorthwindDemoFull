@@ -1,0 +1,211 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* Add asterisk to required form fields */
+.required:after {
+    content: " *";
+    color: red;
+}
+
+/* Style validation summary */
+.validation-summary-errors {
+    color: red;
+    font-weight: bold;
+}
+        
+.validation-summary-valid {
+    display: none;
+}
+
+/* Style individual field validation messages */
+.field-validation-error {
+    color: red;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+/* Style for editor validation messages */
+.input-validation-error {
+    border: 1px solid red;
+}
+
+.input-validation-valid {
+    border: 1px solid #999;
+}
+
+/* Style for unobtrusive validation */
+span[data-valmsg-replace="true"] {
+    color: red;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Cursor pointer for sortable table headers */
+.sortable {
+    cursor: pointer;
+}
+
+/* Fixed table layout for better handling of long text */
+.table.table-fixed {
+    table-layout: fixed;
+    width: 100%;
+}
+
+    .table.table-fixed th,
+    .table.table-fixed td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .table.table-fixed .cell-nowrap {
+        white-space: nowrap;
+    }
+
+    .table.table-fixed .cell-actions {
+        white-space: nowrap;
+        min-width: 260px; /* room for 3 small buttons across common DPI/zoom */
+    }
+
+        .table.table-fixed .cell-actions form {
+            display: inline;
+            margin: 0;
+        }
+
+@media screen and (max-width: 600px) {
+    /* Piilotetaan colgroup ja kärkiosio */
+    colgroup, thead {
+        display: none;
+    }
+
+    .top-scroll-wrapper {
+        display: none !important;
+    }
+
+    .table-wrapper {
+        overflow-x: visible !important; /* Estää turhan vierityksen */
+    }
+
+    table {
+        width: 100%;
+        border: none;
+        border-collapse: collapse;
+        background-color: transparent;
+        table-layout:fixed;
+    }
+
+    /* Muutetaan jokainen rivi erilliseksi kortiksi */
+    tr {
+        width: 90%;
+        overflow: hidden;
+        max-width: 500px;
+        display: block;
+        margin: 15px auto;
+        border-radius: 12px; /* Pyöristetyt kulmat */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Pehmeä varjo */
+        padding: 8px;
+        border: 1px solid #e1e1e1;
+        backface-visibility: hidden;
+        -webkit-font-smoothing: subpixel-antialiased;
+        will-change: transform; /* Kertoo selaimelle, että elementti liikkuu */
+    }
+
+    td {
+        display: block;
+        position: relative;
+        border: none !important; /* Poistaa solujen väliset viivat */
+        margin-bottom: -1px; /* Pakottaa solut "päällekkäin" 1px verran */
+        min-height: 3em;
+        text-align: right;
+        padding-left: 40% !important;
+        word-wrap: break-word;
+        word-break: break-word;
+        /* Pakottaa tekstin rivittymään kortin sisään */
+        overflow-wrap: break-word;
+        /* Sallii tekstin virrata useammalle riville */
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+        td:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* Poistetaan viimeisen solun viiva kortin sisältä */
+        td:last-child {
+            border-bottom: none;
+        }
+
+        /* Tyylitellään solun otsikko (label) */
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 10px;
+            top: 12px;
+            width: 35%;
+            text-align: left;
+            font-weight: bold;
+            color: #4a90e2; /* Korostusväri otsikolle */
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+    .cell-actions {
+        padding-left: 8px !important;
+        text-align: center;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .cell-actions .btn {
+        width: 28%;
+        margin: 5px 2%;
+    }               
+
+    tr {
+        transition: transform 0.2s ease, box-shadow 0.2s ease; /* Pehmeä siirtymä */
+        cursor: pointer;
+    }
+
+        /* Efekti kun kortin päälle mennään tai sitä painetaan */
+        tr:hover, tr:active {
+            transform: translateY(-4px); /* Nostaa korttia ylöspäin */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Voimakkaampi varjo */
+            border-color: #4a90e2; /* Korostusväri reunaan */
+        }
+}
+
+/* Tyyli yläpalkille */
+.top-scroll-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 15px;
+    margin-bottom: 5px;
+}

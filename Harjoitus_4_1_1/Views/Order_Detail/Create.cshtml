@@ -1,0 +1,65 @@
+﻿@using Harjoitus_4_1_1.Models
+@model Order_Detail
+
+@{
+    ViewBag.Title = "Create New Item in Order";
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.OrderID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.DropDownList("OrderID", null, "-- Select order --", htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.OrderID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.ProductID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.DropDownList("ProductID", null, "-- Select product --", htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ProductID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Discount, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="offset-md-2 col-md-10">
+            <button type="submit" class="btn btn-primary me-1">
+                <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>
+                <span>Create</span>
+            </button>
+            <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">
+                <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>
+                <span>Back</span>
+            </a>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

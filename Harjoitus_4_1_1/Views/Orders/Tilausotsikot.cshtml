@@ -1,0 +1,94 @@
+﻿@using Harjoitus_4_1_1.Models
+@model IEnumerable<Order>
+@{
+    ViewBag.Title = "Order Headers";
+    var returnUrl = Request.Url.PathAndQuery;
+}
+@section scripts {
+    <script>
+        $(function () {
+            $(".showOrderClass").click(function () {
+                const orderId = $(this).data("order-id");
+                const url = "/Orders/_TilausRivit/" + orderId;
+                $("#orderDetails_" + orderId).append("<b>Loading order " + orderId + " rows...</b><br />From: " + url);
+                const $detailDiv = $("#orderDetails_" + orderId);
+                $.get(url)
+                    .done(function (data) {
+                        $detailDiv.html(data);
+                    })
+                    .fail(function (xhr) {
+                        $detailDiv.html(xhr.status + " " + xhr.statusText + "<pre>" + xhr.responseText + "</pre>");
+                    });
+            });
+        });
+    </script>
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+<div class="card-header">
+    <a class="card-link text-decoration-none">
+        <form>
+            <div class="input-group">
+                <div class="input-group-text bg-secondary">
+                    <span class="input-group-text text-bg-info fw-bold">Order</span>
+                </div>
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="Customer" disabled />
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="ShipName" disabled />
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="ShipAddress" disabled />
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="ShipCity" disabled />
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="ShipCountry" disabled />
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="ShipRegion" disabled />
+                <input type="text" class="form-control text-bg-secondary fw-bold px-2" value="Shipper" disabled />
+            </div>
+        </form>
+    </a>
+</div>
+<div id="accordion">
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <div class="card-header">
+                <a class="card-link showOrderClass" data-order-id="@item.OrderID" data-bs-toggle="collapse" href="#collapse_@item.OrderID">
+                    <form>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">@item.OrderID</span>
+                            </div>
+                            <input type="text" class="form-control px-2" value="@item.Customer.CompanyName" disabled />
+                            <input type="text" class="form-control px-2" value="@item.ShipName" disabled />
+                            <input type="text" class="form-control px-2" value="@item.ShipAddress" disabled />
+                            <input type="text" class="form-control px-2" value="@item.ShipCity" disabled />
+                            <input type="text" class="form-control px-2" value="@item.ShipCountry" disabled />
+                            <input type="text" class="form-control px-2" value="@item.ShipRegion" disabled />
+                            <input type="text" class="form-control px-2" value="@item.Shipper.CompanyName" disabled />
+                        </div>
+                    </form>
+                </a>
+            </div>
+            <div id="collapse_@item.OrderID" class="collapse" data-bs-parent="#accordion" aria-labelledby="heading_@item.OrderID">
+                <div class="d-flex flex-wrap justify-content-end gap-2 me-3 mt-2">
+                    <a class="btn btn-sm btn-warning me-1" href="@Url.Action("Edit", new { id = item.OrderID, returnUrl = returnUrl })">
+                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                        <span>Edit</span>
+                    </a>
+                    @using (Html.BeginForm("MoveToRecycleBin", "Orders",
+                        new { id = item.OrderID, returnUrl = returnUrl }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
+                            <span>Recycle</span>
+                        </button>
+                    }
+                </div>
+                <div class="card-body">
+                    <div id="orderDetails_@item.OrderID"></div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

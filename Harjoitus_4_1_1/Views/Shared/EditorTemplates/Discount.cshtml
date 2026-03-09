@@ -1,0 +1,10 @@
+﻿@model float
+@{
+    float value = Model;
+    var fieldName = ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty);
+}
+<input type="text"
+       name="@fieldName"
+       value="@(value.ToString("P2", new System.Globalization.CultureInfo("fi-FI")))"
+       class="form-control discount-input"
+       placeholder="0,00 %"/>

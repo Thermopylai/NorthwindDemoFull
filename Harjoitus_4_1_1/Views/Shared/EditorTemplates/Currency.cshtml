@@ -1,0 +1,10 @@
+﻿@model decimal?
+@{
+    decimal value = Model.HasValue ? Model.Value : 0m;
+    var fieldName = ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty);
+}
+<input type="text"
+       name="@fieldName"
+       value="@value.ToString("C", new System.Globalization.CultureInfo("fi-FI"))"
+       class="form-control currency-input"
+       placeholder="0,00 €" />

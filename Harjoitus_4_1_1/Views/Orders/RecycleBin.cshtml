@@ -1,0 +1,165 @@
+﻿@using Harjoitus_4_1_1.Models
+@model IEnumerable<Order>
+
+@{
+    ViewBag.Title = "Orders - Recycle Bin";
+    var returnUrl = (string)ViewBag.ReturnUrl ?? Request.Url.PathAndQuery;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="validation-summary-errors">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<hr />
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+    <a class="btn btn-secondary me-1" href="@Url.Action("Index", new { returnUrl = returnUrl })">
+        <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>
+        <span>Back</span>
+    </a>
+    <input type="text"
+           id="search-orders"
+           onkeyup="filterTable('search-orders', 'orders-table')"
+           placeholder="Search..."
+           class="form-control">
+</div>
+
+<div class="table-wrapper">
+    <table class="table table-striped table-bordered table-fixed" id="orders-table">
+        <colgroup>
+            <col style="width: 80px;" />   @* OrderID *@
+            <col style="width: 260px;" />  @* Customer *@
+            <col style="width: 100px;" />  @* Employee *@
+            <col style="width: 100px;" />  @* OrderDate *@
+            <col style="width: 100px;" />  @* RequiredDate *@
+            <col style="width: 100px;" />  @* ShippedDate *@
+            <col style="width: 100px;" />  @* TotalAmount *@
+            <col style="width: 100px;" />  @* TotalTax *@
+            <col style="width: 100px;" />  @* VatTotal *@
+            <col style="width: 100px;" />  @* Freight *@
+            <col style="width: 100px;" />  @* FinalPrice *@
+            <col style="width: 110px;" />  @* ShipCountry *@
+            <col style="width: 150px;" />  @* Shipper *@
+            <col style="width: 300px;" />  @* Functions *@
+        </colgroup>
+        <thead class="table-dark">
+            <tr>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(m => m.OrderID)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(m => m.CustomerID)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(m => m.EmployeeID)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(m => m.OrderDate)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.RequiredDate)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ShippedDate)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.TotalAmount)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.TotalTax)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.VatTotal)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Freight)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.FinalPrice)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ShipCountry)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ShipVia)
+                </th>
+                <th class="text-nowrap">Functions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td data-label="@Html.DisplayNameFor(model => model.OrderID)">
+                        @Html.DisplayFor(_ => item.OrderID)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.CustomerID)">
+                        @Html.DisplayFor(_ => item.Customer.CompanyName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.EmployeeID)">
+                        @Html.DisplayFor(_ => item.Employee.LastName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.OrderDate)">
+                        @Html.DisplayFor(_ => item.OrderDate)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.RequiredDate)">
+                        @Html.DisplayFor(_ => item.RequiredDate)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ShippedDate)">
+                        @Html.DisplayFor(_ => item.ShippedDate)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.TotalAmount)">
+                        @Html.DisplayFor(_ => item.TotalAmount)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.TotalTax)">
+                        @Html.DisplayFor(_ => item.TotalTax)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.VatTotal)">
+                        @Html.DisplayFor(_ => item.VatTotal)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Freight)">
+                        @Html.DisplayFor(_ => item.Freight)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.FinalPrice)">
+                        @Html.DisplayFor(_ => item.FinalPrice)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ShipCountry)">
+                        @Html.DisplayFor(_ => item.ShipCountry)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ShipVia)">
+                        @Html.DisplayFor(_ => item.Shipper.CompanyName)
+                    </td>
+                    <td class="cell-actions">
+                        @using (Html.BeginForm("RestoreFromRecycleBin", "Orders",
+                            new { id = item.OrderID, returnUrl = returnUrl }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-success me-1">
+                                <i class="bi bi-recycle me-1" aria-hidden="true"></i>
+                                <span>Restore</span>
+                            </button>
+                        }
+                        <a class="btn btn-sm btn-info me-1" href="@Url.Action("Details", new { id = item.OrderID, returnUrl = returnUrl })">
+                            <i class="bi bi-info-square me-1" aria-hidden="true"></i>
+                            <span>Details</span>
+                        </a>
+                        <a class="btn btn-sm btn-danger" href="@Url.Action("DeletePermanently", new { id = item.OrderID, returnUrl = returnUrl })">
+                            <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                            <span>Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+            <tr id="no-results-orders" style="display: none; border: none">
+                <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                    No search results.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

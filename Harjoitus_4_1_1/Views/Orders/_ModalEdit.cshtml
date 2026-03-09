@@ -1,0 +1,200 @@
+﻿@using Harjoitus_4_1_1.Models
+@model Order
+
+<div class="modal fade" id="editOrderModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit order: <em>@Html.DisplayFor(model => model.OrderID)</em></h2>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("_ModalEdit", "Orders", FormMethod.Post, new { id = "editForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.OrderID)
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.CustomerID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.CustomerID, (SelectList)ViewBag.CustomerID, "-- Select customer --", new { @class = "form-control", id = "customerId" })
+                            @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <script>
+                        (() => {
+                            // Runs immediately when the partial is injected.
+
+                            const modal = document.getElementById("editOrderModal");
+                            if (!modal) return;
+
+                            const customerDropdown = modal.getElementById("customerId");
+                            if (!customerDropdown) return;
+
+                            // Prevent duplicate binding if the modal is reopened/reloaded.
+                            if (customerDropdown.dataset.prefillBound === "true") return;
+                            customerDropdown.dataset.prefillBound = "true";
+
+                            const fields = {
+                                shipName: modal.getElementById("shipName"),
+                                shipAddress: modal.getElementById("shipAddress"),
+                                shipCity: modal.getElementById("shipCity"),
+                                shipRegion: modal.getElementById("shipRegion"),
+                                shipPostalCode: modal.getElementById("shipPostalCode"),
+                                shipCountry: modal.getElementById("shipCountry")
+                            };
+
+                            const clearFields = () => {
+                                Object.values(fields).forEach(el => { if (el) el.value = ""; });
+                            };
+
+                            customerDropdown.addEventListener("change", async () => {
+                                const selectedCustomer = customerDropdown.value;
+
+                                if (!selectedCustomer) {
+                                    clearFields();
+                                    return;
+                                }
+
+                                const url = '@Url.Action("GetCustomerForOrder", "Customers")' +
+                                            '?id=' + encodeURIComponent(selectedCustomer);
+
+                                try {
+                                    const response = await fetch(url, { method: "GET" });
+
+                                    if (!response.ok) {
+                                        clearFields();
+                                        console.log("Failed to load customer details. Status:", response.status);
+                                        return;
+                                    }
+
+                                    const customerDetails = await response.json();
+
+                                    fields.shipName.value = customerDetails.CompanyName || "";
+                                    fields.shipAddress.value = customerDetails.Address || "";
+                                    fields.shipCity.value = customerDetails.City || "";
+                                    fields.shipRegion.value = customerDetails.Region || "";
+                                    fields.shipPostalCode.value = customerDetails.PostalCode || "";
+                                    fields.shipCountry.value = customerDetails.Country || "";
+                                } catch (err) {
+                                    clearFields();
+                                    console.log("Fetch error:", err);
+                                }
+                            });
+                        })();
+                    </script>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.EmployeeID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.EmployeeID, (SelectList)ViewBag.EmployeeID, "-- Select employee --", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.EmployeeID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShippedDate, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShippedDate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ShippedDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipVia, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.ShipVia, (SelectList)ViewBag.ShipVia, "-- Select shipper --", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ShipVia, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.Freight, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Freight, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Freight, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipName, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShipName, new { htmlAttributes = new { @class = "form-control", id = "shipName" } })
+                            @Html.ValidationMessageFor(model => model.ShipName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipAddress, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShipAddress, new { htmlAttributes = new { @class = "form-control", id = "shipAddress" } })
+                            @Html.ValidationMessageFor(model => model.ShipAddress, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipCity, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShipCity, new { htmlAttributes = new { @class = "form-control", id = "shipCity" } })
+                            @Html.ValidationMessageFor(model => model.ShipCity, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipRegion, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShipRegion, new { htmlAttributes = new { @class = "form-control", id = "shipRegion" } })
+                            @Html.ValidationMessageFor(model => model.ShipRegion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipPostalCode, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShipPostalCode, new { htmlAttributes = new { @class = "form-control", id = "shipPostalCode" } })
+                            @Html.ValidationMessageFor(model => model.ShipPostalCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.ShipCountry, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ShipCountry, new { htmlAttributes = new { @class = "form-control", id = "shipCountry" } })
+                            @Html.ValidationMessageFor(model => model.ShipCountry, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <div class="offset-md-2 col-md-10">
+                    <button type="submit" form="editForm" class="btn btn-primary me-1" data-bs-dismiss="modal">
+                        <i class="bi bi-floppy me-1" aria-hidden="true"></i>
+                        <span>Save Changes</span>
+                    </button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x me-1" aria-hidden="true"></i>
+                        <span>Cancel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+﻿@using Harjoitus_4_1_1.Models
+@model IEnumerable<CustomerDemographic>
+
+@{
+    ViewBag.Title = "Customer Demographics - Recycle Bin";
+    var returnUrl = (string)ViewBag.ReturnUrl ?? Request.Url.PathAndQuery; ;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="validation-summary-errors">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<hr />
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+    <a class="btn btn-secondary me-1" href="@Url.Action("Index", new { returnUrl = returnUrl })">
+        <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>
+        <span>Back</span>
+    </a>
+    <input type="text"
+           id="search-demographics"
+           onkeyup="filterTable('search-demographics', 'demographics-table')"
+           placeholder="Search..."
+           class="form-control">
+</div>
+
+<div class="table-wrapper">
+    <table class="table table-striped table-bordered table-fixed" id="demographics-table">
+        <colgroup>
+            <col style="width: 150px;" />   @* CustomerTypeID *@
+            <col style="width: 300px;" />   @* CustomerDesc *@
+            <col style="width: 260px;" />   @* Functions *@
+        </colgroup>
+        <thead class="table-dark">
+            <tr>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(model => model.CustomerTypeID)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.CustomerDesc)
+                </th>
+                <th class="text-nowrap">
+                    Functions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td data-label="@Html.DisplayNameFor(model => model.CustomerTypeID)">
+                        @Html.DisplayFor(_ => item.CustomerTypeID)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.CustomerDesc)">
+                        @Html.DisplayFor(_ => item.CustomerDesc)
+                    </td>
+                    <td class="cell-actions">
+                        @using (Html.BeginForm("RestoreFromRecycleBin", "Categories",
+                            new { id = item.CustomerTypeID.Trim(), returnUrl = returnUrl }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-success me-1">
+                                <i class="bi bi-recycle me-1" aria-hidden="true"></i>    
+                                <span>Restore</span>
+                            </button>
+                        }
+                        <a class="btn btn-sm btn-info me-1" href="@Url.Action("Details", new { id = item.CustomerTypeID.Trim(), returnUrl = returnUrl })">
+                            <i class="bi bi-info-square me-1" aria-hidden="true"></i>
+                            <span>Details</span>
+                        </a>
+                        <a class="btn btn-sm btn-danger" href="@Url.Action("DeletePermanently", new { id = item.CustomerTypeID.Trim(), returnUrl = returnUrl })">
+                            <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                            <span>Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+            <tr id="no-results-demographics" style="display: none; border: none">
+                <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                    No search results.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

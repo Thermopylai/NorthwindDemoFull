@@ -1,0 +1,314 @@
+﻿@using Harjoitus_4_1_1.ViewModels
+@model OrdersViewModel
+
+@{
+    ViewBag.Title = "Edit Order Details";
+
+    var returnUrl = Request.Url.PathAndQuery;
+}
+
+<h2>@ViewBag.Title</h2>
+<h5>Order: <em>@Html.DisplayFor(model => model.Order.OrderID)</em></h5>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("returnUrl", Model.ReturnUrl)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Order.OrderID)
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.CustomerID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Order.CustomerID, (SelectList)ViewBag.CustomerID, "-- Select customer --", new { @class = "form-control", id = "customerId" })
+            @Html.ValidationMessageFor(model => model.Order.CustomerID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const customerDropdown = document.getElementById("customerId");
+        if (!customerDropdown) return;
+
+        const fields = {
+            shipName: document.getElementById("shipName"),
+            shipAddress: document.getElementById("shipAddress"),
+            shipCity: document.getElementById("shipCity"),
+            shipRegion: document.getElementById("shipRegion"),
+            shipPostalCode: document.getElementById("shipPostalCode"),
+            shipCountry: document.getElementById("shipCountry")
+        };
+
+        const clearFields = () => {
+            Object.values(fields).forEach(el => { if (el) el.value = ""; });
+        };
+
+        customerDropdown.addEventListener("change", async () => {
+            const selectedCustomer = customerDropdown.value;
+
+            if (!selectedCustomer) {
+                clearFields();
+                return;
+            }
+
+            const url = '@Url.Action("GetCustomerForOrder", "Customers")' +
+                        '?id=' + encodeURIComponent(selectedCustomer);
+
+            try {
+                const response = await fetch(url, { method: "GET" });
+
+                if (!response.ok) {
+                    clearFields();
+                    console.log("Failed to load customer details. Status:", response.status);
+                    return;
+                }
+
+                const customerDetails = await response.json();
+
+                fields.shipName.value = customerDetails.CompanyName || "";
+                fields.shipAddress.value = customerDetails.Address || "";
+                fields.shipCity.value = customerDetails.City || "";
+                fields.shipRegion.value = customerDetails.Region || "";
+                fields.shipPostalCode.value = customerDetails.PostalCode || "";
+                fields.shipCountry.value = customerDetails.Country || "";
+            } catch (err) {
+                clearFields();
+                console.log("Fetch error:", err);
+            }
+        });
+    });
+    </script>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.EmployeeID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Order.EmployeeID, (SelectList)ViewBag.EmployeeID, "-- Select employee --" , new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Order.EmployeeID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.OrderDate, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.OrderDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Order.OrderDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.RequiredDate, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.RequiredDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Order.RequiredDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShippedDate, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShippedDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Order.ShippedDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipVia, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Order.ShipVia, (SelectList)ViewBag.ShipVia, "-- Select shipper --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Order.ShipVia, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.Freight, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.Freight, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Order.Freight, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipName, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShipName, new { htmlAttributes = new { @class = "form-control", id = "shipName" } })
+            @Html.ValidationMessageFor(model => model.Order.ShipName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipAddress, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShipAddress, new { htmlAttributes = new { @class = "form-control", id = "shipAddress" } })
+            @Html.ValidationMessageFor(model => model.Order.ShipAddress, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipCity, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShipCity, new { htmlAttributes = new { @class = "form-control", id = "shipCity" } })
+            @Html.ValidationMessageFor(model => model.Order.ShipCity, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipRegion, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShipRegion, new { htmlAttributes = new { @class = "form-control", id = "shipRegion" } })
+            @Html.ValidationMessageFor(model => model.Order.ShipRegion, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipPostalCode, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShipPostalCode, new { htmlAttributes = new { @class = "form-control", id = "shipPostalCode" } })
+            @Html.ValidationMessageFor(model => model.Order.ShipPostalCode, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="mb-3 row">
+        @Html.LabelFor(model => model.Order.ShipCountry, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Order.ShipCountry, new { htmlAttributes = new { @class = "form-control", id = "shipCountry" } })
+            @Html.ValidationMessageFor(model => model.Order.ShipCountry, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="offset-md-2 col-md-10">
+            <button type="submit" class="btn btn-primary me-1">
+                <i class="bi bi-floppy me-1" aria-hidden="true"></i>
+                <span>Save Changes</span>
+            </button>
+            <a href="@Model.ReturnUrl" class="btn btn-secondary">
+                <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>
+                <span>Back</span>
+            </a>
+        </div>
+    </div>
+}
+
+<div>
+    <hr />
+    <h5>Items in this order: @Model.OrderDetailsCount</h5>
+
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        <a class="btn btn-primary me-1" href="@Url.Action("Create", "Order_Detail", new { orderId = Model.Order.OrderID, returnUrl = returnUrl })">
+            <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>
+            <span>Create New Item</span>
+        </a>
+        <input type="text"
+               id="search-orderdetails"
+               onkeyup="filterTable('search-orderdetails', 'orderdetails-table')"
+               placeholder="Search..."
+               class="form-control">
+    </div>
+
+    @if (Model.OrderDetailsCount == 0)
+    {
+        <p>No items found.</p>
+    }
+    else
+    {
+        <div class="table-wrapper">
+            <table class="table table-striped table-bordered table-fixed" id="orderdetails-table">
+                <colgroup>
+                    <col style="width: 260px;" />  @* ProductName *@
+                    <col style="width: 100px;" />  @* UnitPrice *@
+                    <col style="width: 100px;" />  @* Quantity *@
+                    <col style="width: 100px;" />  @* Discount *@
+                    <col style="width: 100px;" />  @* TotalPrice *@
+                    <col style="width: 100px;" />  @* TaxAmount *@
+                    <col style="width: 100px;" />  @* VatPrice *@
+                    <col style="width: 300px;" />  @* Functions *@
+                </colgroup>
+                <thead class="table-dark">
+                    <tr>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].Product.ProductName)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].UnitPrice)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].Quantity)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].Discount)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].TotalPrice)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].TaxAmount)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.OrderDetails[0].VatPrice)
+                        </th>
+                        <th class="text-nowrap">
+                            Functions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].Product.ProductName)">
+                                @Html.DisplayFor(_ => item.Product.ProductName)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].UnitPrice)">
+                                @Html.DisplayFor(_ => item.UnitPrice)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].Quantity)">
+                                @Html.DisplayFor(_ => item.Quantity)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].Discount)">
+                                @Html.DisplayFor(_ => item.Discount)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].TotalPrice)">
+                                @Html.DisplayFor(_ => item.TotalPrice)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].TaxAmount)">
+                                @Html.DisplayFor(_ => item.TaxAmount)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.OrderDetails[0].VatPrice)">
+                                @Html.DisplayFor(_ => item.VatPrice)
+                            </td>
+                            <td class="cell-actions">
+                                <a class="btn btn-sm btn-warning me-1" href="@Url.Action("Edit", "Order_Detail", new { orderId = item.OrderID, productId = item.ProductID, returnUrl = returnUrl })">
+                                    <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                                    <span>Edit</span>
+                                </a>
+                                <a class="btn btn-sm btn-info me-1" href="@Url.Action("Details", "Order_Detail", new { orderId = item.OrderID, productId = item.ProductID, returnUrl = returnUrl })">
+                                    <i class="bi bi-info-square me-1" aria-hidden="true"></i>
+                                    <span>Details</span>
+                                </a>
+                                @using (Html.BeginForm("MoveToRecycleBin", "Order_Detail",
+                                    new { orderId = item.OrderID, productId = item.ProductID, returnUrl = returnUrl }, FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
+                                        <span>Recycle</span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    <tr id="no-results-orderdetails" style="display: none; border: none">
+                        <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                            No search results.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

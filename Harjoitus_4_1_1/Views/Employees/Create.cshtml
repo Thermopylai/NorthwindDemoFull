@@ -1,0 +1,119 @@
+﻿@using Harjoitus_4_1_1.Models
+@model Employee
+
+@{
+    ViewBag.Title = "Create New Employee";
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3 row">
+        <section class="col-md-4">
+            <div class="mb-3">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.TitleOfCourtesy, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.TitleOfCourtesy, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TitleOfCourtesy, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.HireDate, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.HireDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HireDate, "", new { @class = "text-danger" })
+            </div>
+        </section>
+        <section class="col-md-4">
+            <div class="mb-3">
+                @Html.LabelFor(model => model.ReportsTo, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.DropDownListFor(model => model.ReportsTo, (SelectList)ViewBag.ReportsTo, "-- Select manager --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ReportsTo, "", new { @class = "text-danger" })
+            </div>
+           <div class="mb-3">
+                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.PostalCode, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.PostalCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PostalCode, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Country, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.Country, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.HomePhone, htmlAttributes: new { @class = "form-label fw-bold required" })
+                @Html.EditorFor(model => model.HomePhone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HomePhone, "", new { @class = "text-danger" })
+            </div>
+        </section>
+        <section class="col-md-4">
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Extension, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.EditorFor(model => model.Extension, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Extension, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Region, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.EditorFor(model => model.Region, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Region, "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Territories, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.ListBox("TerritoryID", (MultiSelectList)ViewBag.TerritoryIDs, new { @class = "form-control" })
+                @Html.ValidationMessage("TerritoryID", "", new { @class = "text-danger" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "form-label fw-bold" })
+                @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", rows = 5 })
+                @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
+            </div>
+        </section>
+        <section class="my-3">
+            <button type="submit" class="btn btn-primary me-1">
+                <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>
+                <span>Create</span>
+            </button>
+            <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">
+                <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>
+                <span>Back</span>
+            </a>
+        </section>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

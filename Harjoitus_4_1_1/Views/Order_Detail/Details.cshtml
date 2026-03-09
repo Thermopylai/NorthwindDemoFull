@@ -1,0 +1,92 @@
+﻿@using Harjoitus_4_1_1.Models
+@model Order_Detail
+
+@{
+    ViewBag.Title = "Item Details";
+    var returnUrl = (string)ViewBag.ReturnUrl ?? Url.Action("Index");
+    var returnToThisUrl = Request.Url.PathAndQuery;
+}
+
+<h2>@ViewBag.Title</h2>
+<h5>From order: <em>@Html.DisplayFor(model => model.OrderID)</em></h5>
+<hr />
+
+<div>
+    <dl class="row">
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Order.Customer.CompanyName)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Order.Customer.CompanyName)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Product.ProductName)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Product.ProductName)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.UnitPrice)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Discount)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Discount)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.TotalPrice)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.TaxAmount)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.TaxAmount)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.VatPrice)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.VatPrice)
+        </dd>
+
+    </dl>
+</div>
+<div class="mt-3 offset-md-2 col-md-10">
+    <a class="btn btn-warning me-1" href="@Url.Action("Edit", new { orderId = Model.OrderID, productId = Model.ProductID, returnUrl = returnToThisUrl })">
+        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+        <span>Edit</span>
+    </a>
+    <a href="@returnUrl" class="btn btn-secondary">
+        <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>    
+        <span>Back</span>
+    </a>
+</div>

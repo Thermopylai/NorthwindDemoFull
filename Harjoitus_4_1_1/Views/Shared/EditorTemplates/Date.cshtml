@@ -1,0 +1,12 @@
+﻿@model Nullable<DateTime>
+@{
+    DateTime dt = DateTime.Now;
+    if (Model.HasValue)
+    {
+        dt = Model.Value;
+    }
+}
+<input type="date"
+       name="@ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty)"
+       value="@dt.ToString("yyyy-MM-dd")"
+       class="form-control" />

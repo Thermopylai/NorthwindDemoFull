@@ -1,0 +1,4 @@
+﻿@model float
+@(Model != 0f
+    ? Model.ToString("P2", new System.Globalization.CultureInfo("fi-FI"))
+    : string.Empty)

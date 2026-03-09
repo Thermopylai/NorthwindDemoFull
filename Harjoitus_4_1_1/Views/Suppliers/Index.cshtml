@@ -1,0 +1,149 @@
+﻿@using Harjoitus_4_1_1.Models
+@model IEnumerable<Supplier>
+
+@{
+    ViewBag.Title = "Suppliers";
+    var returnUrl = (string)ViewBag.ReturnUrl ?? Request.Url.PathAndQuery;
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+    <a class="btn btn-primary me-1" href="@Url.Action("Create", new { returnUrl = returnUrl })">
+        <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>
+        <span>Create New</span>
+    </a>
+    <a class="btn btn-outline-secondary me-1" href="@Url.Action("RecycleBin", new { returnUrl = returnUrl })">
+        <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
+        <span>Recycle Bin</span>
+    </a>
+    <input type="text"
+           id="search-suppliers"
+           onkeyup="filterTable('search-suppliers', 'suppliers-table')"
+           placeholder="Search..."
+           class="form-control">
+</div>
+
+<div class="table-wrapper">
+    <table class="table table-striped table-bordered table-fixed" id="suppliers-table">
+        <colgroup>
+            <col style="width: 50px;" />   @* SupplierID *@
+            <col style="width: 320px;" />  @* CompanyName *@
+            <col style="width: 170px;" />  @* ContactName *@
+            <col style="width: 170px;" />  @* ContactTitle *@
+            <col style="width: 180px;" />  @* Address *@
+            <col style="width: 120px;" />  @* City *@
+            <col style="width: 80px;" />   @* Region *@
+            <col style="width: 90px;" />   @* PostalCode *@
+            <col style="width: 110px;" />  @* Country *@
+            <col style="width: 140px;" />  @* Phone *@
+            <col style="width: 140px;" />  @* Fax *@
+            <col style="width: 300px;" />  @* Functions *@
+        </colgroup>
+        <thead class="table-dark">
+            <tr>
+                <th class="sortable text-nowrap" title="@Html.DisplayNameFor(model => model.SupplierID)">
+                    <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(model => model.SupplierID)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.CompanyName)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ContactName)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.ContactTitle)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.City)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Region)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.PostalCode)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Country)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th class="sortable text-nowrap">
+                    <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Fax)
+                </th>
+                <th class="text-nowrap">
+                    Functions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td data-label="@Html.DisplayNameFor(model => model.SupplierID)">
+                        @Html.DisplayFor(_ => item.SupplierID)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.CompanyName)">
+                        @Html.DisplayFor(_ => item.CompanyName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ContactName)">
+                        @Html.DisplayFor(_ => item.ContactName)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.ContactTitle)">
+                        @Html.DisplayFor(_ => item.ContactTitle)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Address)">
+                        @Html.DisplayFor(_ => item.Address)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.City)">
+                        @Html.DisplayFor(_ => item.City)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Region)">
+                        @Html.DisplayFor(_ => item.Region)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.PostalCode)">
+                        @Html.DisplayFor(_ => item.PostalCode)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Country)">
+                        @Html.DisplayFor(_ => item.Country)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Phone)">
+                        @Html.DisplayFor(_ => item.Phone)
+                    </td>
+                    <td data-label="@Html.DisplayNameFor(model => model.Fax)">
+                        @Html.DisplayFor(_ => item.Fax)
+                    </td>
+                    <td class="cell-actions">
+                        <a class="btn btn-sm btn-warning me-1" href="@Url.Action("Edit", new { id = item.SupplierID, returnUrl = returnUrl })">
+                            <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                            <span>Edit</span>
+                        </a>
+                        <a class="btn btn-sm btn-info me-1" href="@Url.Action("Details", new { id = item.SupplierID, returnUrl = returnUrl })">
+                            <i class="bi bi-info-square me-1" aria-hidden="true"></i>
+                            <span>Details</span>
+                        </a>
+                        @using (Html.BeginForm("MoveToRecycleBin", "Suppliers",
+                            new { id = item.SupplierID, returnUrl = returnUrl }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
+                                <span>Recycle</span>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+            <tr id="no-results-suppliers" style="display: none; border: none">
+                <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                    No search results.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

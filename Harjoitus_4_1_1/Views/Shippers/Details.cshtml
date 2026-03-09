@@ -1,0 +1,270 @@
+﻿@using Harjoitus_4_1_1.ViewModels
+@model ShippersViewModel
+
+@{
+    ViewBag.Title = "Shipper Details";
+    var returnUrl = Model.ReturnUrl ?? Url.Action("Index");
+    var returnToThisUrl = Request.Url.PathAndQuery;
+}
+
+<h2>@ViewBag.Title</h2>
+<h5>Shipper: <em>@Html.DisplayFor(model => model.Shipper.ShipperID)</em></h5>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Shipper.CompanyName)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Shipper.CompanyName)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Shipper.Phone)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Shipper.Phone)
+        </dd>
+
+        <dt class="col-md-2 text-md-end">
+            @Html.DisplayNameFor(model => model.Shipper.Region.RegionDescription)
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Shipper.Region.RegionDescription)
+        </dd>
+
+    </dl>
+</div>
+
+<div class="mt-3 offset-md-2 col-md-10">
+    <a class="btn btn-warning me-1" href="@Url.Action("Edit", new { id = Model.Shipper.ShipperID, returnUrl = returnToThisUrl })">
+        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+        <span>Edit</span>
+    </a>
+    <a href="@returnUrl" class="btn btn-secondary">
+        <i class="bi bi-skip-backward me-1" aria-hidden="true"></i>    
+        <span>Back</span>
+    </a>
+</div>
+
+<div>
+    <hr />
+
+    <h5>Orders associated with this shipper: @Model.OrdersCount</h5>
+
+    @if (Model.OrdersCount == 0)
+    {
+        <p>No items found.</p>
+    }
+    else
+    {
+        <div class="table-search-container">
+            <input type="text"
+                   id="search-orders"
+                   onkeyup="filterTable('search-orders', 'orders-table')"
+                   placeholder="Search..."
+                   class="form-control mb-2">
+        </div>
+
+        <div class="table-wrapper">
+            <table class="table table-striped table-bordered table-fixed" id="orders-table">
+                <colgroup>
+                    <col style="width: 80px;" />   @* OrderID *@
+                    <col style="width: 260px;" />  @* Customer *@
+                    <col style="width: 100px;" />  @* OrderDate *@
+                    <col style="width: 100px;" />  @* TotalAmount *@
+                    <col style="width: 100px;" />  @* TotalTax *@
+                    <col style="width: 100px;" />  @* VatTotal *@
+                    <col style="width: 100px;" />  @* Freight *@
+                    <col style="width: 100px;" />  @* FinalPrice *@
+                    <col style="width: 110px;" />  @* ShipCountry *@
+                    <col style="width: 300px;" />  @* Functions *@
+                </colgroup>
+                <thead class="table-dark">
+                    <tr>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(model => model.Orders[0].OrderID)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].CustomerID)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].OrderDate)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].TotalAmount)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].TotalTax)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].VatTotal)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].Freight)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].FinalPrice)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Orders[0].ShipCountry)
+                        </th>
+                        <th class="text-nowrap">
+                            Functions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Orders)
+                    {
+                        <tr>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].OrderID)">
+                                @Html.DisplayFor(_ => item.OrderID)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].CustomerID)">
+                                @Html.DisplayFor(_ => item.Customer.CompanyName)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].OrderDate)">
+                                @Html.DisplayFor(_ => item.OrderDate)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].TotalAmount)">
+                                @Html.DisplayFor(_ => item.TotalAmount)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].TotalTax)">
+                                @Html.DisplayFor(_ => item.TotalTax)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].VatTotal)">
+                                @Html.DisplayFor(_ => item.VatTotal)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].Freight)">
+                                @Html.DisplayFor(_ => item.Freight)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].FinalPrice)">
+                                @Html.DisplayFor(_ => item.FinalPrice)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Orders[0].ShipCountry)">
+                                @Html.DisplayFor(_ => item.ShipCountry)
+                            </td>
+                            <td class="cell-actions">
+                                <a class="btn btn-sm btn-warning me-1" href="@Url.Action("Edit", "Orders", new { id = item.OrderID, returnUrl = returnToThisUrl })">
+                                    <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                                    <span>Edit</span>
+                                </a>
+                                <a class="btn btn-sm btn-info me-1" href="@Url.Action("Details", "Orders", new { id = item.OrderID, returnUrl = returnToThisUrl })">
+                                    <i class="bi bi-info-square me-1" aria-hidden="true"></i>
+                                    <span>Details</span>
+                                </a>
+                                @using (Html.BeginForm("MoveToRecycleBin", "Orders",
+                                    new { id = item.OrderID, returnUrl = returnToThisUrl }, FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
+                                        <span>Recycle</span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    <tr id="no-results-orders" style="display: none; border: none">
+                        <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                            No search results.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<div>
+    <hr />
+
+    <h5>Territories associated with this shipper: @Model.TerritoriesCount</h5>
+
+    @if (Model.TerritoriesCount == 0)
+    {
+        <p>No items found.</p>
+    }
+    else
+    {
+        <div class="table-search-container">
+            <input type="text"
+                   id="search-territories"
+                   onkeyup="filterTable('search-territories', 'territories-table')"
+                   placeholder="Search..."
+                   class="form-control mb-2">
+        </div>
+
+        <div class="table-wrapper">
+            <table class="table table-striped table-bordered table-fixed" id="territories-table">
+                <colgroup>
+                    <col style="width: 90px;" />   @* TerritoryID *@
+                    <col style="width: 220px;" />  @* TerritoryDescription *@
+                    <col style="width: 90px;" />   @* RegionID *@
+                    <col style="width: 300px;" />  @* Functions *@
+                </colgroup>
+                <thead class="table-dark">
+                    <tr>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1"></i>@Html.DisplayNameFor(model => model.Territories[0].TerritoryID)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Territories[0].TerritoryDescription)
+                        </th>
+                        <th class="sortable text-nowrap">
+                            <i class="bi-arrow-down me-1 d-none"></i>@Html.DisplayNameFor(model => model.Territories[0].RegionID)
+                        </th>
+                        <th class="text-nowrap">
+                            Functions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Territories)
+                    {
+                        <tr>
+                            <td data-label="@Html.DisplayNameFor(model => model.Territories[0].TerritoryID)">
+                                @Html.DisplayFor(_ => item.TerritoryID)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Territories[0].TerritoryDescription)">
+                                @Html.DisplayFor(_ => item.TerritoryDescription)
+                            </td>
+                            <td data-label="@Html.DisplayNameFor(model => model.Territories[0].RegionID)">
+                                @Html.DisplayFor(_ => item.Region.RegionDescription)
+                            </td>
+                            <td class="cell-actions">
+                                <a class="btn btn-sm btn-warning me-1" href="@Url.Action("Edit", "Territories", new { id = item.TerritoryID.Trim(), returnUrl = returnToThisUrl })">
+                                    <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                                    <span>Edit</span>
+                                </a>
+                                <a class="btn btn-sm btn-info me-1" href="@Url.Action("Details", "Territories", new { id = item.TerritoryID.Trim(), returnUrl = returnToThisUrl })">
+                                    <i class="bi bi-info-square me-1" aria-hidden="true"></i>
+                                    <span>Details</span>
+                                </a>
+                                @using (Html.BeginForm("MoveToRecycleBin", "Territories",
+                                    new { id = item.TerritoryID.Trim(), returnUrl = returnToThisUrl }, FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
+                                        <span>Recycle</span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    <tr id="no-results-territories" style="display: none; border: none">
+                        <td colspan="2" style="text-align: center; padding: 40px; padding-left: 40px !important; color: #666; border: 1px solid; border-radius: 8px;">
+                            No search results.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
