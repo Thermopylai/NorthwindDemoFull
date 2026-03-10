@@ -1,0 +1,227 @@
+﻿
+@using Harjoitus_4_1_1.Models
+@model Order
+
+<div class="modal fade" id="deleteOrderModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title ">Delete order: <em>@Html.DisplayFor(model => model.OrderID)</em></h2>
+            </div>
+            <div class="modal-body">
+                <h6>@Html.ValidationSummary(true, "", new { @class = "text-danger" })</h6>
+                <dl class="row">
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.CustomerID)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.Customer.CompanyName)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.EmployeeID)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.Employee.LastName)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.OrderDate)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.OrderDate)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.RequiredDate)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.RequiredDate)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShippedDate)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShippedDate)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.TotalAmount)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.TotalAmount)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.TotalTax)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.TotalTax)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.VatTotal)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.VatTotal)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.Freight)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.Freight)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.FinalPrice)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.FinalPrice)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipName)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShipName)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipAddress)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShipAddress)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipCity)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShipCity)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipRegion)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShipRegion)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipPostalCode)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShipPostalCode)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipCountry)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.ShipCountry)
+                    </dd>
+
+                    <dt class="col-md-2 text-md-end">
+                        @Html.DisplayNameFor(model => model.ShipVia)
+                    </dt>
+
+                    <dd class="col-md-10">
+                        @Html.DisplayFor(model => model.Shipper.CompanyName)
+                    </dd>
+
+                </dl>
+
+                <script>
+                    (() => {
+                        const modalEl = document.getElementById("deleteOrderModal");
+                        if (!modalEl) return;
+
+                        const form = modalEl.querySelector("#deleteForm");
+                        if (!form) return;
+
+                        if (form.dataset.ajaxBound === "true") return;
+                        form.dataset.ajaxBound = "true";
+
+                        $(form).on("submit", function (e) {
+                            e.preventDefault();
+
+                            $.ajax({
+                                url: form.action,
+                                type: "POST",
+                                data: $(form).serialize(),
+                                dataType: "json" // expect JSON on success
+                            })
+                                .done(function (json) {
+                                    if (!json || json.ok !== true) {
+                                        alert((json && json.message) ? json.message : "Delete failed.");
+                                        return;
+                                    }
+
+                                    // remove row from RecycleBin table (button has the id)
+                                    const btn = document.querySelector(".deleteOrderId[data-order-id='" + json.orderId + "']");
+                                    const row = btn ? btn.closest("tr") : null;
+                                    if (row) row.remove();
+
+                                    bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+                                })
+                                .fail(function (xhr) {
+                                    if (xhr.status === 401) {
+                                        try { alert(JSON.parse(xhr.responseText).message || "Not authorized."); }
+                                        catch { alert("Not authorized."); }
+                                        return;
+                                    }
+                                    const host = $("#orderDelete");
+                                    host.empty();
+                                    host.html(xhr.responseText);
+
+                                    const newModalEl = document.getElementById("deleteOrderModal");
+                                    const modal = bootstrap.Modal.getOrCreateInstance(newModalEl);
+                                    modal.show();
+                                });
+                        });
+                    })();
+                </script>
+            </div>
+
+            <div class="modal-footer">
+                <div class="offset-md-2 col-md-10">
+                    <div class="d-flex">
+                        @using (Html.BeginForm("_ModalDeletePermanently", "OrderModals", FormMethod.Post, new { id = "deleteForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.OrderID)
+
+                            <button type="submit" form="deleteForm" class="btn btn-danger me-1">
+                                <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                                <span>Delete</span>
+                            </button>
+                        }
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x" aria-hidden="true"></i>
+                            <span>Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

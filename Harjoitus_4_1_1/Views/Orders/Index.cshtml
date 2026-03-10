@@ -186,7 +186,7 @@
         $(function () {
             $(".getOrderId").click(function () {
                 const orderId = $(this).data("order-id");
-                const url = "/Orders/_ModalEdit/" + orderId;
+                const url = '@Url.Action("_ModalEdit", "OrderModals")/' + orderId;
                 $.get(url)
                     .done(function (data) {
                         const host = $("#orderEdit");
@@ -204,7 +204,7 @@
         });
         $(function () {
             $(".createNewOrder").click(function () {
-                const url = "/Orders/_ModalCreate";
+                const url = '@Url.Action("_ModalCreate", "OrderModals")';
                 $.get(url)
                     .done(function (data) {
                         const host = $("#orderCreate");

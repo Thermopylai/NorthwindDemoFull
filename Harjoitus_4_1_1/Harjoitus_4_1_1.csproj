@@ -134,6 +134,7 @@
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
     <Compile Include="Controllers\LoginsController.cs" />
+    <Compile Include="Controllers\OrderModalsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\Order_DetailController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -378,8 +379,9 @@
     <Content Include="Views\Orders\Tilausotsikot.cshtml" />
     <Content Include="Views\Orders\_Tilausrivit.cshtml" />
     <Content Include="Views\Logins\Create.cshtml" />
-    <Content Include="Views\Orders\_ModalEdit.cshtml" />
-    <Content Include="Views\Orders\_ModalCreate.cshtml" />
+    <Content Include="Views\OrderModals\_ModalEdit.cshtml" />
+    <Content Include="Views\OrderModals\_ModalCreate.cshtml" />
+    <Content Include="Views\OrderModals\_ModalDeletePermanently.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
