@@ -18,6 +18,7 @@
         <i class="bi bi-trash-fill me-1" aria-hidden="true"></i>
         <span>Recycle Bin</span>
     </a>
+    <button class="createNewOrder bi bi-file-earmark-plus me-1"></button>
     <input type="text"
            id="search-orders"
            onkeyup="filterTable('search-orders', 'orders-table')"
@@ -25,19 +26,20 @@
            class="form-control">
     @using (Html.BeginForm("Index", "Orders", FormMethod.Get, new { @class = "d-flex align-items-center gap-2" }))
     {
-        <span class="text-nowrap">Select Country:</span>
+        <span class="text-nowrap">Country:</span>
         @Html.DropDownList("shipCountry", (SelectList)ViewBag.ShipCountry, "All", htmlAttributes: new { @class = "form-control" })
 
-        <span class="text-nowrap">Select Customer:</span>
+        <span class="text-nowrap">Customer:</span>
         @Html.DropDownList("customerId", (SelectList)ViewBag.CustomerID, "All", htmlAttributes: new { @class = "form-control" })
 
-        <span class="text-nowrap">Select Shipper:</span>
+        <span class="text-nowrap">Shipper:</span>
         @Html.DropDownList("shipVia", (SelectList)ViewBag.ShipVia, "All", htmlAttributes: new { @class = "form-control" })
 
         <input type="submit" value="Filter" class="btn btn-outline-primary" />
     }
 </div>
 
+<div id="orderCreate"></div>
 <div id="orderEdit"></div>
 
 <div class="table-wrapper">
@@ -197,6 +199,24 @@
                     })
                     .fail(function (xhr) {
                         $("#orderEdit").html("<div class='alert alert-danger'>Error loading order details: " + xhr.statusText + "</div>");
+                    });
+            });
+        });
+        $(function () {
+            $(".createNewOrder").click(function () {
+                const url = "/Orders/_ModalCreate";
+                $.get(url)
+                    .done(function (data) {
+                        const host = $("#orderCreate");
+                        host.empty();
+                        host.html(data);
+
+                        const modalEl = document.getElementById("createOrderModal");
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    })
+                    .fail(function (xhr) {
+                        $("#orderCreate").html("<div class='alert alert-danger'>Error creating new order: " + xhr.statusText + "</div>");
                     });
             });
         });

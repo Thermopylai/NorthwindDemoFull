@@ -187,6 +187,41 @@ namespace Harjoitus_4_1_1.Controllers
             return View(order);
         }
 
+        // GET: Orders/Create
+        public ActionResult _ModalCreate()
+        {
+            ViewBag.CustomerID = new SelectList(db.Customers, "CustomerID", "CompanyName");
+            ViewBag.EmployeeID = new SelectList(db.Employees, "EmployeeID", "LastName");
+            ViewBag.ShipVia = new SelectList(db.Shippers, "ShipperID", "CompanyName");
+            return PartialView(nameof(_ModalCreate));
+        }
+
+        // POST: Orders/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> _ModalCreate(
+            [Bind(Include = "OrderID,CustomerID,EmployeeID,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipName,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry")]
+            Order order)
+        {
+            order.IsDeleted = false;
+
+            if (ModelState.IsValid)
+            {
+                db.Orders.Add(order);
+                await db.SaveChangesAsync();
+                
+                return RedirectToAction(nameof(Index));
+            }
+                        
+            ViewBag.CustomerID = new SelectList(db.Customers, "CustomerID", "CompanyName", order.CustomerID);
+            ViewBag.EmployeeID = new SelectList(db.Employees, "EmployeeID", "LastName", order.EmployeeID);
+            ViewBag.ShipVia = new SelectList(db.Shippers, "ShipperID", "CompanyName", order.ShipVia);
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return PartialView(nameof(_ModalCreate), order);
+        }
+
         // GET: Orders/Edit/5
         public async Task<ActionResult> Edit(int? id, string returnUrl = null)
         {

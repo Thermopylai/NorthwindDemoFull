@@ -1,18 +1,18 @@
-﻿@using Harjoitus_4_1_1.Models
+﻿
+@using Harjoitus_4_1_1.Models
 @model Order
 
-<div class="modal fade" id="editOrderModal">
+<div class="modal fade" id="createOrderModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Edit order: <em>@Html.DisplayFor(model => model.OrderID)</em></h2>
+                <h2 class="modal-title">Create New Order</h2>
             </div>
             <div class="modal-body">
-                @using (Html.BeginForm("_ModalEdit", "Orders", FormMethod.Post, new { id = "editForm" }))
+                @using (Html.BeginForm("_ModalCreate", "Orders", FormMethod.Post, new { id = "createForm" }))
                 {
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    @Html.HiddenFor(model => model.OrderID)
 
                     <div class="mb-3 row">
                         @Html.LabelFor(model => model.CustomerID, htmlAttributes: new { @class = "form-label col-md-2 col-form-label text-md-end fw-bold required" })
@@ -24,21 +24,21 @@
 
                     <script>
                         (() => {
-                            const modal = document.getElementById("editOrderModal");
+                            const modal = document.getElementById("createOrderModal");
                             if (!modal) return;
-                                                        
+
                             // Force selected values from the model
-                            const customerId = '@(Model.CustomerID ?? "")';
+                            @*const customerId = '@(Model.CustomerID ?? "")';
                             const employeeId = '@(Model.EmployeeID?.ToString() ?? "")';
-                            const shipVia = '@(Model.ShipVia?.ToString() ?? "")';
+                            const shipVia = '@(Model.ShipVia?.ToString() ?? "")';*@
 
                             const customerDropdown = modal.querySelector("#CustomerID");
-                            const employeeDropdown = modal.querySelector("#EmployeeID");
-                            const shipViaDropdown = modal.querySelector("#ShipVia");
+                            //const employeeDropdown = modal.querySelector("#EmployeeID");
+                            //const shipViaDropdown = modal.querySelector("#ShipVia");
 
-                            if (customerDropdown) customerDropdown.value = customerId;
-                            if (employeeDropdown) employeeDropdown.value = employeeId;
-                            if (shipViaDropdown) shipViaDropdown.value = shipVia;
+                            //if (customerDropdown) customerDropdown.value = customerId;
+                            //if (employeeDropdown) employeeDropdown.value = employeeId;
+                            //if (shipViaDropdown) shipViaDropdown.value = shipVia;
 
                             // Prevent duplicate binding if the modal is reopened/reloaded.
                             if (customerDropdown.dataset.prefillBound === "true") return;
@@ -90,10 +90,10 @@
                             });
                         })();
                         (() => {
-                            const modalEl = document.getElementById("editOrderModal");
+                            const modalEl = document.getElementById("createOrderModal");
                             if (!modalEl) return;
 
-                            const form = modalEl.querySelector("#editForm");
+                            const form = modalEl.querySelector("#createForm");
                             if (!form) return;
 
                             // Avoid double-binding when modal HTML is replaced
@@ -107,48 +107,17 @@
                                     url: form.action,
                                     type: "POST",
                                     data: $(form).serialize(),
-                                    dataType: "json" // expect JSON on success
                                 })
                                     .done(function (json) {
-                                        if (!json || json.ok !== true) return;
-
-                                        // Find the row by the pencil button for this orderId
-                                        const btn = document.querySelector(".getOrderId[data-order-id='" + json.orderId + "']");
-                                        const row = btn ? btn.closest("tr") : null;
-
-                                        if (row) {
-                                            const setText = (selector, value) => {
-                                                const el = row.querySelector(selector);
-                                                if (el) el.textContent = value ?? "";
-                                            };
-
-                                            setText(".cell-customer", json.customerName);
-                                            setText(".cell-employee", json.employeeName);
-
-                                            setText(".cell-orderdate", json.orderDate);
-                                            setText(".cell-requireddate", json.requiredDate);
-                                            setText(".cell-shippeddate", json.shippedDate);
-
-                                            setText(".cell-totalamount", json.totalAmount);
-                                            setText(".cell-totaltax", json.totalTax);
-                                            setText(".cell-vattotal", json.vatTotal);
-                                            setText(".cell-freight", json.freight);
-                                            setText(".cell-finalprice", json.finalPrice);
-
-                                            setText(".cell-shipcountry", json.shipCountry);
-                                            setText(".cell-shipvia", json.shipperName);
-                                        }
-
-                                        // Close modal
-                                        bootstrap.Modal.getOrCreateInstance(modalEl).hide();
-                                    })    
+                                        window.location.reload(); // Reload the page to show the new order in the list
+                                    })
                                     .fail(function (xhr) {
                                         // Validation failure: server returned the partial view HTML
-                                        const host = $("#orderEdit");
+                                        const host = $("#orderCreate");
                                         host.empty();
                                         host.html(xhr.responseText);
 
-                                        const newModalEl = document.getElementById("editOrderModal");
+                                        const newModalEl = document.getElementById("createOrderModal");
                                         const modal = bootstrap.Modal.getOrCreateInstance(newModalEl);
                                         modal.show();
                                     });
@@ -251,13 +220,15 @@
                             @Html.ValidationMessageFor(model => model.ShipCountry, "", new { @class = "text-danger" })
                         </div>
                     </div>
+
+
                 }
             </div>
             <div class="modal-footer">
                 <div class="offset-md-2 col-md-10">
-                    <button type="submit" form="editForm" class="btn btn-primary me-1" data-bs-dismiss="modal">
-                        <i class="bi bi-floppy me-1" aria-hidden="true"></i>
-                        <span>Save Changes</span>
+                    <button type="submit" form="createForm" class="btn btn-primary me-1" data-bs-dismiss="modal">
+                        <i class="bi bi-file-earmark-plus me-1" aria-hidden="true"></i>
+                        <span>Create</span>
                     </button>
                     <button class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="bi bi-x me-1" aria-hidden="true"></i>
@@ -268,3 +239,6 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

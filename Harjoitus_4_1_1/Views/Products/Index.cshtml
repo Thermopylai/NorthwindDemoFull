@@ -25,10 +25,10 @@
            class="form-control">
     @using (Html.BeginForm("Index", "Products", FormMethod.Get, new { @class = "d-flex align-items-center gap-2" }))
     {
-        <span class="text-nowrap">Select Category:</span>
+        <span class="text-nowrap">Category:</span>
         @Html.DropDownList("categoryId", (SelectList)ViewBag.CategoryID, "All", htmlAttributes: new { @class = "form-control" })
 
-        <span class="text-nowrap">Select Supplier:</span>
+        <span class="text-nowrap">Supplier:</span>
         @Html.DropDownList("supplierId", (SelectList)ViewBag.SupplierID, "All", htmlAttributes: new { @class = "form-control" })
 
         <input type="submit" value="Filter" class="btn btn-outline-primary" />
